@@ -113,12 +113,36 @@
 			if($sameNames->rowCount()){
 				$this->errors[] = "Customer with same name already exists. Please update first/last name.";
 				$this->valid = false;
-			}			
+			}
+		}
+
+		public function employeeExists(){
+			$this->valid = false;
+
+			//New sales rep number is valid name exists
+			$employeesDataset = "
+				SELECT
+					*
+				FROM
+					employees
+				WHERE
+					employeeNumber='{$this->salesRepEmployeeNumber}'
+				;
+			";
+
+			$employeesDataset = $this->conn->prepare($employeesDataset);
+
+			$employeesDataset->execute();
+
+			if($employeesDataset->rowCount()){
+				$this->valid = true;
+				return;
+			}	
+			
+			$this->errors[] = "Invalid sales representative.";
 		}
 
 		public function countOrders(){
-			$this->valid = false;
-			
 			$this->orders = "
 				SELECT
 					COUNT(orderNumber) as value

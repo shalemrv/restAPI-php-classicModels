@@ -34,8 +34,15 @@
 		exit(json_encode($finalResponse));
 	}
 
-	// Check if same name/company exist and exit if true
+	// Check if same name/company exist and exit if duplicate
 	$customer->isDuplicate();
+	if(!$customer->valid){
+		$finalResponse['message'] = $customer->errors;
+		exit(json_encode($finalResponse));
+	}
+
+	// Check if selected sales rep exists and exit if false
+	$customer->employeeExists();
 	if(!$customer->valid){
 		$finalResponse['message'] = $customer->errors;
 		exit(json_encode($finalResponse));
