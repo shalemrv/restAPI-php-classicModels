@@ -184,7 +184,7 @@
 		}
 
 		public function list(){
-			$query = "
+			$customersDataset = "
 				SELECT
 					*
 				FROM
@@ -194,14 +194,14 @@
 				;
 			";
 
-			$pdoRes = $this->conn->prepare($query);
-			$pdoRes->execute();
+			$customersDataset = $this->conn->prepare($customersDataset);
+			$customersDataset->execute();
 
-			return $pdoRes;
+			return $customersDataset;
 		}
 
 		public function details(){
-			$query = "
+			$customerDetails = "
 				SELECT
 					*
 				FROM
@@ -211,19 +211,19 @@
 				;
 			";
 
-			$pdoRes = $this->conn->prepare($query);
+			$customerDetails = $this->conn->prepare($customerDetails);
 
-			$pdoRes->bindParam(1, $this->customerNumber);
+			$customerDetails->bindParam(1, $this->customerNumber);
 
-			$pdoRes->execute();
+			$customerDetails->execute();
 
-			if($pdoRes->rowCount()==0){
+			if($customerDetails->rowCount()==0){
 				return;
 			}
 			
 			$this->valid = true;
 
-			$customerDetails = $pdoRes->fetch(PDO::FETCH_ASSOC);
+			$customerDetails = $customerDetails->fetch(PDO::FETCH_ASSOC);
 
 			extract($customerDetails);
 
