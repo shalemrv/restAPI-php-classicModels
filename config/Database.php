@@ -8,7 +8,7 @@
 		private $host		= "localhost";
 		private $username	= "root";
 		private $password	= "";
-		private $dbName		= "sample_db";
+		private $dbName		= "classic_models";
 
 		public $conn;
 		
