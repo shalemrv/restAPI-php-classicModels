@@ -15,7 +15,7 @@
 	$payment = new Payment($db);
 
 	$payment->customerNumber	= intval($_GET['customerNumber']);
-	$payment->checkNumber		= $_GET['checkNumber'];
+	$payment->checkNumber	= $_GET['checkNumber'];
 
 	// Check if Customer Exists and exit if not
 	$payment->customerExists();
@@ -24,16 +24,16 @@
 		exit(json_encode($finalResponse));
 	}
 
+	// Check if payment exists and exit if not
 	$payment->details();
-
 	if(!$payment->valid){
 		$finalResponse['message'] = "Customer: {$payment->customerNumber} - CheckNo: {$payment->checkNumber}. Payment does not exist.";
 		exit(json_encode($finalResponse));
 	}
 	
-	$payment->checkNumber 	= $params['checkNumber'];
-	$payment->paymentDate 	= $params['paymentDate'];
-	$payment->amount 		= floatval($params['amount']);
+	$payment->newCheckNumber 	= $params['checkNumber'];
+	$payment->paymentDate 		= $params['paymentDate'];
+	$payment->amount 			= floatval($params['amount']);
 
 	$paymentDetailsTxt = "Customer: {$payment->customerNumber} - CheckNo: {$payment->checkNumber}.";
 

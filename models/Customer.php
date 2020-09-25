@@ -25,6 +25,7 @@
 		public $country;
 		public $salesRepEmployeeNumber;
 		public $creditLimit;
+		public $salesRepEmployeeName;
 		
 		function __construct($db){
 			$this->conn = $db;
@@ -186,11 +187,30 @@
 		public function list(){
 			$customersDataset = "
 				SELECT
-					*
+					c.customerNumber,
+					c.customerName,
+					c.contactLastName,
+					c.contactFirstName,
+					c.phone,
+					c.addressLine1,
+					c.addressLine2,
+					c.city,
+					c.state,
+					c.postalCode,
+					c.country,
+					c.salesRepEmployeeNumber,
+					c.creditLimit,
+
+					e.firstName,
+					e.lastName
 				FROM
-					{$this->table}
+					{$this->table} c
+					INNER JOIN
+					employees e
+					ON
+					c.salesRepEmployeeNumber=e.employeeNumber
 				ORDER BY
-					customerNumber DESC
+					c.customerNumber DESC
 				;
 			";
 
@@ -203,11 +223,30 @@
 		public function details(){
 			$customerDetails = "
 				SELECT
-					*
+					c.customerNumber,
+					c.customerName,
+					c.contactLastName,
+					c.contactFirstName,
+					c.phone,
+					c.addressLine1,
+					c.addressLine2,
+					c.city,
+					c.state,
+					c.postalCode,
+					c.country,
+					c.salesRepEmployeeNumber,
+					c.creditLimit,
+
+					e.firstName,
+					e.lastName
 				FROM
-					{$this->table}
+					{$this->table} c
+					INNER JOIN
+					employees e
+					ON
+					c.salesRepEmployeeNumber=e.employeeNumber
 				WHERE
-					customerNumber=?
+					c.customerNumber=?
 				;
 			";
 
@@ -238,8 +277,9 @@
 			$this->state					= $state;
 			$this->postalCode				= $postalCode;
 			$this->country					= $country;
-			$this->salesRepEmployeeNumber	= $salesRepEmployeeNumber;
-			$this->creditLimit				= $creditLimit;
+			$this->salesRepEmployeeNumber	= intval($salesRepEmployeeNumber);
+			$this->salesRepEmployeeName		= "$firstName $lastName";
+			$this->creditLimit				= floatval($creditLimit);
 		}
 		
 		public function create(){

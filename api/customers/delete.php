@@ -19,7 +19,7 @@
 
 	$customer = new Customer($db);
 
-	$customer->customerNumber = $_GET['customerNumber'];
+	$customer->customerNumber = intval($_GET['customerNumber']);
 
 	$customer->details();
 

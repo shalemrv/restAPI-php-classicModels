@@ -15,6 +15,7 @@
 		public $customerNumber;
 		public $customerName;
 		public $checkNumber;
+		public $newCheckNumber;
 		public $paymentDate;
 		public $amount;
 		
@@ -213,7 +214,7 @@
 				UPDATE
 					{$this->table}
 				SET
-					checkNumber=:checkNumber,
+					checkNumber=:newCheckNumber,
 					paymentDate=:paymentDate,
 					amount=:amount
 				WHERE
@@ -231,6 +232,7 @@
 
 			$updateRes->bindParam(":customerNumber", 	$this->customerNumber);
 			$updateRes->bindParam(":checkNumber", 		$this->checkNumber);
+			$updateRes->bindParam(":newCheckNumber", 	$this->newCheckNumber);
 			$updateRes->bindParam(":paymentDate",		$this->paymentDate);
 			$updateRes->bindParam(":amount",			$this->amount);
 

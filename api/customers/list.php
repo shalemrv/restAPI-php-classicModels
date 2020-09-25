@@ -29,7 +29,7 @@
 		array_push(
 			$customersList,
 			array(
-				"customerNumber"			=> $customerNumber,
+				"customerNumber"			=> intval($customerNumber),
 				"customerName"				=> $customerName,
 				"contactLastName"			=> $contactLastName,
 				"contactFirstName"			=> $contactFirstName,
@@ -40,8 +40,9 @@
 				"state"						=> $state,
 				"postalCode"				=> $postalCode,
 				"country"					=> $country,
-				"salesRepEmployeeNumber"	=> $salesRepEmployeeNumber,
-				"creditLimit"				=> $creditLimit
+				"salesRepEmployeeNumber"	=> intval($salesRepEmployeeNumber),
+				"salesRepEmployeeName"		=> "$firstName $lastName",
+				"creditLimit"				=> floatval($creditLimit)
 			)
 		);
 	}

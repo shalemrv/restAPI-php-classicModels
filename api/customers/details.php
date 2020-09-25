@@ -17,7 +17,7 @@
 
 	$customer = new Customer($db);
 
-	$customer->customerNumber = $_GET['customerNumber'];
+	$customer->customerNumber = intval($_GET['customerNumber']);
 
 	$customer->details();
 
@@ -39,6 +39,7 @@
 		"postalCode"				=> $customer->postalCode,
 		"country"					=> $customer->country,
 		"salesRepEmployeeNumber"	=> $customer->salesRepEmployeeNumber,
+		"salesRepEmployeeName"		=> $customer->salesRepEmployeeName,
 		"creditLimit"				=> $customer->creditLimit
 	);
 
