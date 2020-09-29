@@ -42,6 +42,13 @@
 		exit(json_encode($finalResponse));
 	}
 
+	// Check if reportTo employee exists and exit if false
+	$employee->reportingToExists();
+	if(!$employee->valid){
+		$finalResponse['message'] = $employee->errors;
+		exit(json_encode($finalResponse));
+	}
+
 	// Run update query and exit if it fails
 	$employee->update();
 	if(!$employee->valid){

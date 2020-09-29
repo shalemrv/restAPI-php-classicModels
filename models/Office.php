@@ -1,24 +1,26 @@
 <?php
-	require("../../config/validate.php");
-
-	class Payment{
-
-		use Validate;
+	/**
+	* Customers Modification Class
+	*/
+	class OFfice{
 
 		private $conn;
-		private $table = "payments";
+		private $table = "offices";
 
 		public $valid = false;
 		public $errors = array();
 
-		public $payments;
+		public $employees;
 
-		public $customerNumber;
-		public $customerName;
-		public $checkNumber;
-		public $newCheckNumber;
-		public $paymentDate;
-		public $amount;
+		public $officeCode;
+		public $city;
+		public $phone;
+		public $addressLine1;
+		public $addressLine2;
+		public $state;
+		public $country;
+		public $postalCode;
+		public $territory;
 		
 		function __construct($db){
 			$this->conn = $db;
@@ -27,32 +29,38 @@
 		public function validate(){
 			$this->valid = true;
 
-			$this->customerNumber	= intval($this->customerNumber);
-			$this->checkNumber		= $this->cleanse("alphaNum", $this->checkNumber);
-			$this->paymentDate		= $this->cleanse("removeHtmlTags", $this->paymentDate);
-			$this->amount			= floatval($this->amount);
-
+			$this->officeCode 		= intval($this->officeCode);
+			$this->city 			= $this->cleanse("alphaSpace", $this->city);
+			$this->phone 			= $this->cleanse("num", $this->phone);
+			$this->addressLine1 	= $this->cleanse("removeHtmlTags", $this->addressLine1);
+			$this->addressLine2 	= $this->cleanse("removeHtmlTags", $this->addressLine2);
+			$this->state 			= $this->cleanse("alphaSpace", $this->state);
+			$this->country 			= $this->cleanse("alphaSpace", $this->country);
+			$this->postalCode 		= $this->cleanse("num", $this->postalCode);
+			$this->territory 		= $this->cleanse("alphaSpace", $this->territory);
+			
 			// CUSTOMER NUMBER VALID
 			if($this->customerNumber<1){
 				$this->errors[] = "Amount has to be greater than 0.";
 				$this->valid = false;	
 			}
 
-			// CHECK NUMBER VALID
-			if(!$this->valid("min-char", $this->checkNumber, 4){
-				$this->errors[] = "Check number to be at least 4 characters long.";
+			// FIRST NAME VALID
+			if(strlen(str_replace(" ", "", $this->officeCode))<3){
+				$this->errors[] = "Office code has to be at least 3 characters long.";
 				$this->valid = false;	
 			}
 
-			// PAYMENT DATE VALID
-			if(!$this->valid("eq-char", $this->paymentDate, 10){
-				$this->errors[] = "Payment date has to be exactly 10 characters long. YYYY-mm-dd E.g.2020-12-31";
+			// LAST NAME VALID
+			if( strlen(str_replace(" ", "", $this->city))<4 ){
+				$this->errors[] = "City has to be at least 4 characters long.";
 				$this->valid = false;
 			}
 
-			// AMOUNT VALID
-			if(!$this->amount<1){
-				$this->errors[] = "Amount has to be greater than or equal to 1.";
+			
+			// PHONE NUMBER VALID
+			if(strlen(str_replace(" ", "", $this->phone))<6){
+				$this->errors[] = "Phone number has to be at least 6 digits long.";
 				$this->valid = false;	
 			}
 		}
@@ -193,7 +201,11 @@
 				;
 			";
 
-			$insertRes = $this->conn->prepare($insertRes);			
+			$insertRes = $this->conn->prepare($insertRes);
+
+			$this->checkNumber 		= htmlspecialchars(strip_tags($this->checkNumber));
+			$this->paymentDate 		= htmlspecialchars(strip_tags($this->paymentDate));
+			$this->amount 			= htmlspecialchars(strip_tags($this->amount));
 
 			$insertRes->bindParam(":customerNumber",	$this->customerNumber);
 			$insertRes->bindParam(":checkNumber",		$this->checkNumber);
@@ -227,10 +239,6 @@
 			";
 
 			$updateRes = $this->conn->prepare($updateRes);
-
-			$this->checkNumber 		= htmlspecialchars(strip_tags($this->checkNumber));
-			$this->paymentDate 		= htmlspecialchars(strip_tags($this->paymentDate));
-			$this->amount 			= htmlspecialchars(strip_tags($this->amount));
 
 			$updateRes->bindParam(":customerNumber", 	$this->customerNumber);
 			$updateRes->bindParam(":checkNumber", 		$this->checkNumber);

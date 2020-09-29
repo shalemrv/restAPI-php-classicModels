@@ -1,8 +1,9 @@
 <?php
-	/**
-	* Customers Modification Class
-	*/
+	require("../../config/validate.php");
+
 	class Employee{
+
+		use Validate;
 
 		private $conn;
 		private $table = "employees";
@@ -28,26 +29,34 @@
 		public function validate(){
 			$this->valid = true;
 
+			$this->firstName 	= $this->cleanse("alphaSpace", $this->firstName);
+			$this->lastName 	= $this->cleanse("alphaSpace", $this->lastName);
+			$this->extension 	= $this->cleanse("alphaNum", $this->extension);
+			$this->email 		= $this->cleanse("removeHtmlTags", $this->email);
+			$this->officeCode 	= intval($this->officeCode);
+			$this->reportsTo 	= intval($this->reportsTo);
+			$this->jobTitle 	= $this->cleanse("alphaNumSpace", $this->jobTitle);
+
 			// FIRST NAME VALID
-			if(strlen(str_replace(" ", "", $this->firstName))<2){
+			if(!$this->valid("min-char", $this->firstName, 2) ){
 				$this->errors[] = "First name has to be at least 2 characters long.";
 				$this->valid = false;
 			}
 
 			// LAST NAME VALID
-			if(strlen(str_replace(" ", "", $this->lastName))<2){
+			if(!$this->valid("min-char", $this->lastName, 2) ){
 				$this->errors[] = "Last name has to be at least 2 characters long.";
 				$this->valid = false;
 			}
 
 			// EMAIL VALID
-			if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)){
+			if( !$this->valid("email", $this->email) ){
 				$this->errors[] = "Invalid email format";
 				$this->valid = false;
 			}
 
 			// CITY VALID
-			if(strlen(str_replace(" ", "", $this->jobTitle))<2){
+			if(!$this->valid("min-char", $this->jobTitle, 2) ){
 				$this->errors[] = "Job Title has to be at least 2 characters long.";
 				$this->valid = false;
 			}
@@ -103,6 +112,34 @@
 			}	
 			
 			$this->errors[] = "Invalid Office. Select an office from the list of existing offices.";
+		}
+
+		public function reportingToExists(){
+			$this->valid = true;
+
+			if($this->reportsTo==0){
+				return;
+			}
+
+			//New sales rep number is valid name exists
+			$employeesDataset = "
+				SELECT
+					*
+				FROM
+					{$this->table}
+				WHERE
+					employeeNumber='{$this->reportsTo}'
+				;
+			";
+
+			$employeesDataset = $this->conn->prepare($employeesDataset);
+
+			$employeesDataset->execute();
+
+			if($employeesDataset->rowCount()==0){
+				$this->valid = false;
+				$this->errors[] = "Invalid Reporting to Employee. Select a valid employee as Supervisor.";
+			}
 		}
 
 		public function countCustomers(){
@@ -170,13 +207,13 @@
 
 			extract($employeeDetails);
 
-			$this->employeeNumber	= $employeeNumber;
+			$this->employeeNumber	= intval($employeeNumber);
 			$this->lastName			= $lastName;
 			$this->firstName		= $firstName;
 			$this->extension		= $extension;
 			$this->email			= $email;
 			$this->officeCode		= $officeCode;
-			$this->reportsTo		= $reportsTo;
+			$this->reportsTo		= intval($reportsTo);
 			$this->jobTitle			= $jobTitle;
 		}
 		
@@ -211,20 +248,28 @@
 					extension=:extension,
 					email=:email,
 					officeCode=:officeCode,
-					reportsTo=:reportsTo,
 					jobTitle=:jobTitle
 				;
 			";
 
-			$insertRes = $this->conn->prepare($insertRes);
+			if($this->reportsTo){
+				$insertRes = "
+					INSERT INTO
+						{$this->table}
+					SET
+						employeeNumber=:employeeNumber,
+						firstName=:firstName,
+						lastName=:lastName,
+						extension=:extension,
+						email=:email,
+						officeCode=:officeCode,
+						reportsTo=:reportsTo,
+						jobTitle=:jobTitle
+					;
+				";
+			}
 
-			$this->firstName 	= htmlspecialchars(strip_tags($this->firstName));
-			$this->lastName 	= htmlspecialchars(strip_tags($this->lastName));
-			$this->extension 	= htmlspecialchars(strip_tags($this->extension));
-			$this->email 		= htmlspecialchars(strip_tags($this->email));
-			$this->officeCode 	= htmlspecialchars(strip_tags($this->officeCode));
-			$this->reportsTo 	= htmlspecialchars(strip_tags($this->reportsTo));
-			$this->jobTitle 	= htmlspecialchars(strip_tags($this->jobTitle));
+			$insertRes = $this->conn->prepare($insertRes);
 
 			$insertRes->bindParam(":employeeNumber",	$this->employeeNumber);
 			$insertRes->bindParam(":lastName",			$this->lastName);
@@ -232,8 +277,11 @@
 			$insertRes->bindParam(":extension",			$this->extension);
 			$insertRes->bindParam(":email",				$this->email);
 			$insertRes->bindParam(":officeCode",		$this->officeCode);
-			$insertRes->bindParam(":reportsTo",			$this->reportsTo);
 			$insertRes->bindParam(":jobTitle",			$this->jobTitle);
+
+			if($this->reportsTo){
+				$insertRes->bindParam(":reportsTo",			$this->reportsTo);
+			}
 
 			if($insertRes->execute()){
 				$this->valid = true;
@@ -256,12 +304,29 @@
 					extension=:extension,
 					email=:email,
 					officeCode=:officeCode,
-					reportsTo=:reportsTo,
 					jobTitle=:jobTitle
 				WHERE
 					employeeNumber=:employeeNumber
 				;
 			";
+
+			if($this->reportsTo){
+				$updateRes = "
+					UPDATE
+						{$this->table}
+					SET
+						firstName=:firstName,
+						lastName=:lastName,
+						extension=:extension,
+						email=:email,
+						officeCode=:officeCode,
+						reportsTo=:reportsTo,
+						jobTitle=:jobTitle
+					WHERE
+						employeeNumber=:employeeNumber
+					;
+				";	
+			}
 
 			$updateRes = $this->conn->prepare($updateRes);
 
@@ -270,7 +335,6 @@
 			$this->extension 		= htmlspecialchars(strip_tags($this->extension));
 			$this->email 			= htmlspecialchars(strip_tags($this->email));
 			$this->officeCode 		= htmlspecialchars(strip_tags($this->officeCode));
-			$this->reportsTo 		= htmlspecialchars(strip_tags($this->reportsTo));
 			$this->jobTitle 		= htmlspecialchars(strip_tags($this->jobTitle));
 
 			$updateRes->bindParam(":employeeNumber",	$this->employeeNumber);
@@ -279,8 +343,11 @@
 			$updateRes->bindParam(":extension",			$this->extension);
 			$updateRes->bindParam(":email",				$this->email);
 			$updateRes->bindParam(":officeCode",		$this->officeCode);
-			$updateRes->bindParam(":reportsTo",			$this->reportsTo);
 			$updateRes->bindParam(":jobTitle",			$this->jobTitle);
+
+			if($this->reportsTo){
+				$updateRes->bindParam(":reportsTo", $this->reportsTo);
+			}
 
 			if($updateRes->execute()){
 				$this->valid = true;

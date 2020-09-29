@@ -1,8 +1,9 @@
 <?php
-	/**
-	* Customers Modification Class
-	*/
+	require("../../config/validate.php");
+
 	class Customer{
+
+		use Validate;
 
 		private $conn;
 		private $table = "customers";
@@ -34,38 +35,51 @@
 		public function validate(){
 			$this->valid = true;
 
+			$this->customerName 			= $this->cleanse("alphaNumSpaceSpecial", $this->customerName));
+			$this->contactFirstName 		= $this->cleanse("alphaSpace", $this->contactFirstName);
+			$this->contactLastName 			= $this->cleanse("alphaSpace", $this->contactLastName);
+			$this->phone 					= $this->cleanse("num", $this->phone);
+			$this->addressLine1 			= $this->cleanse("removeHtmlTags", $this->addressLine1);
+			$this->addressLine2 			= $this->cleanse("removeHtmlTags", $this->addressLine2);
+			$this->city 					= $this->cleanse("alphaSpace", $this->city);
+			$this->state 					= $this->cleanse("alphaSpace", $this->state);
+			$this->postalCode 				= $this->cleanse("num", $this->phone);
+			$this->country 					= $this->cleanse("alphaSpace", $this->country);
+			$this->salesRepEmployeeNumber 	= intval($this->salesRepEmployeeNumber);
+			$this->creditLimit 				= floatval($this->creditLimit);
+
 			// FIRST NAME VALID
-			if(strlen(str_replace(" ", "", $this->contactFirstName))<2){
+			if( !$this->valid("min-char", $this->contactFirstName, 2) ){
 				$this->errors[] = "First name has to be at least 2 characters long.";
 				$this->valid = false;	
 			}
 
 			// LAST NAME VALID
-			if(strlen(str_replace(" ", "", $this->contactLastName))<2){
+			if( !$this->valid("min-char", $this->contactLastName, 2) ){
 				$this->errors[] = "Last name has to be at least 2 characters long.";
 				$this->valid = false;	
 			}
 
 			// PHONE NUMBER VALID
-			if(strlen(str_replace(" ", "", $this->phone))<6){
+			if( !$this->valid("min-char", $this->phone, 6) ){
 				$this->errors[] = "Phone number has to be at least 6 digits long.";
 				$this->valid = false;	
 			}
 
 			// ADDRESS LINE 1 VALID
-			if(strlen(str_replace(" ", "", $this->addressLine1))<6){
+			if( !$this->valid("min-char", $this->addressLine1, 6) ){
 				$this->errors[] = "Address line 1 has to be at least 6 characters long.";
 				$this->valid = false;	
 			}
 
 			// CITY VALID
-			if(strlen(str_replace(" ", "", $this->city))<2){
-				$this->errors[] = "City has to be at least 2 characters long.";
-				$this->valid = false;	
+			if( !$this->valid("min-char", $this->city, 3) ){
+				$this->errors[] = "City has to be at least 3 characters long.";
+				$this->valid = false;
 			}
 
 			// COUNTRY VALID
-			if(strlen(str_replace(" ", "", $this->country))<4){
+			if( !$this->valid("min-char", $this->country, 4) ){
 				$this->errors[] = "Country has to be at least 4 characters long.";
 				$this->valid = false;
 			}		
@@ -325,19 +339,6 @@
 
 			$insertRes = $this->conn->prepare($insertRes);
 
-			$this->customerName 			= htmlspecialchars(strip_tags($this->customerName));
-			$this->contactLastName 			= htmlspecialchars(strip_tags($this->contactLastName));
-			$this->contactFirstName 		= htmlspecialchars(strip_tags($this->contactFirstName));
-			$this->phone 					= htmlspecialchars(strip_tags($this->phone));
-			$this->addressLine1 			= htmlspecialchars(strip_tags($this->addressLine1));
-			$this->addressLine2 			= htmlspecialchars(strip_tags($this->addressLine2));
-			$this->city 					= htmlspecialchars(strip_tags($this->city));
-			$this->state 					= htmlspecialchars(strip_tags($this->state));
-			$this->postalCode 				= htmlspecialchars(strip_tags($this->postalCode));
-			$this->country 					= htmlspecialchars(strip_tags($this->country));
-			$this->salesRepEmployeeNumber 	= htmlspecialchars(strip_tags($this->salesRepEmployeeNumber));
-			$this->creditLimit 				= htmlspecialchars(strip_tags($this->creditLimit));
-
 			$insertRes->bindParam(":customerNumber", 			$this->customerNumber);
 			$insertRes->bindParam(":customerName", 				$this->customerName);
 			$insertRes->bindParam(":contactLastName",			$this->contactLastName);
@@ -386,19 +387,6 @@
 			";
 
 			$updateRes = $this->conn->prepare($updateRes);
-
-			$this->customerName 			= htmlspecialchars(strip_tags($this->customerName));
-			$this->contactLastName 			= htmlspecialchars(strip_tags($this->contactLastName));
-			$this->contactFirstName 		= htmlspecialchars(strip_tags($this->contactFirstName));
-			$this->phone 					= htmlspecialchars(strip_tags($this->phone));
-			$this->addressLine1 			= htmlspecialchars(strip_tags($this->addressLine1));
-			$this->addressLine2 			= htmlspecialchars(strip_tags($this->addressLine2));
-			$this->city 					= htmlspecialchars(strip_tags($this->city));
-			$this->state 					= htmlspecialchars(strip_tags($this->state));
-			$this->postalCode 				= htmlspecialchars(strip_tags($this->postalCode));
-			$this->country 					= htmlspecialchars(strip_tags($this->country));
-			$this->salesRepEmployeeNumber 	= htmlspecialchars(strip_tags($this->salesRepEmployeeNumber));
-			$this->creditLimit 				= htmlspecialchars(strip_tags($this->creditLimit));
 
 			$updateRes->bindParam(":customerNumber", 			$this->customerNumber);
 			$updateRes->bindParam(":customerName", 				$this->customerName);
