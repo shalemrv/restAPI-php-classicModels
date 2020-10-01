@@ -36,7 +36,7 @@
 		function valid($type, $input, $len=0){
 			switch($type){
 				case 'min-char':
-					return strlen(preg_replace('/[^A-Za-z0-9]/', '', $input))>$len;
+					return strlen(preg_replace('/[^A-Za-z0-9]/', '', $input))>=$len;
 
 				case 'eq-char':
 					return strlen(preg_replace('/[^A-Za-z0-9]/', '', $input))==$len;

@@ -1,8 +1,9 @@
 <?php
-	/**
-	* Customers Modification Class
-	*/
-	class OFfice{
+	require("../../config/validate.php");
+
+	class Office{
+
+		use Validate;
 
 		private $conn;
 		private $table = "offices";
@@ -29,7 +30,7 @@
 		public function validate(){
 			$this->valid = true;
 
-			$this->officeCode 		= intval($this->officeCode);
+			$this->officeCode 		= $this->cleanse("alphaNum", $this->officeCode);
 			$this->city 			= $this->cleanse("alphaSpace", $this->city);
 			$this->phone 			= $this->cleanse("num", $this->phone);
 			$this->addressLine1 	= $this->cleanse("removeHtmlTags", $this->addressLine1);
@@ -38,30 +39,47 @@
 			$this->country 			= $this->cleanse("alphaSpace", $this->country);
 			$this->postalCode 		= $this->cleanse("num", $this->postalCode);
 			$this->territory 		= $this->cleanse("alphaSpace", $this->territory);
-			
-			// CUSTOMER NUMBER VALID
-			if($this->customerNumber<1){
-				$this->errors[] = "Amount has to be greater than 0.";
+
+			// OFFICE CODE VALID
+			if( !$this->valid("min-char", $this->officeCode, 1) ){
+				$this->errors[] = "Office code has to be at least 1 characters long.";
 				$this->valid = false;	
 			}
 
-			// FIRST NAME VALID
-			if(strlen(str_replace(" ", "", $this->officeCode))<3){
-				$this->errors[] = "Office code has to be at least 3 characters long.";
+			// PHONE NUMBER VALID
+			if( !$this->valid("min-char", $this->phone, 6) ){
+				$this->errors[] = "Phone number has to be at least 6 digits long.";
 				$this->valid = false;	
 			}
 
-			// LAST NAME VALID
-			if( strlen(str_replace(" ", "", $this->city))<4 ){
-				$this->errors[] = "City has to be at least 4 characters long.";
+			// CITY VALID
+			if( !$this->valid("min-char", $this->city, 3) ){
+				$this->errors[] = "City has to be at least 3 characters long.";
 				$this->valid = false;
 			}
 
-			
-			// PHONE NUMBER VALID
-			if(strlen(str_replace(" ", "", $this->phone))<6){
-				$this->errors[] = "Phone number has to be at least 6 digits long.";
+			// ADDRESS LINE 1 VALID
+			if( !$this->valid("min-char", $this->addressLine1, 6) ){
+				$this->errors[] = "Address line 1 has to be at least 6 characters long.";
 				$this->valid = false;	
+			}
+
+			// COUNTRY VALID
+			if( !$this->valid("min-char", $this->country, 3) ){
+				$this->errors[] = "Country has to be at least 3 characters long.";
+				$this->valid = false;
+			}
+
+			// POSTAL CODE VALID
+			if( !$this->valid("min-char", $this->postalCode, 5) ){
+				$this->errors[] = "Postal Code has to be at least 5 characters long.";
+				$this->valid = false;
+			}
+
+			// TERRITORY VALID
+			if( !$this->valid("min-char", $this->territory, 4) ){
+				$this->errors[] = "Territory has to be at least 4 characters long.";
+				$this->valid = false;
 			}
 		}
 
@@ -69,121 +87,98 @@
 			$this->valid = true;
 
 			//Same company name exists
-			$samePayments = "
+			$sameOfficeCode = "
 				SELECT
 					*
 				FROM
 					{$this->table}
 				WHERE
-					customerNumber='{$this->customerNumber}'
-					AND
-					checkNumber='{$this->checkNumber}'
+					officeCode='{$this->officeCode}'
 				;
 			";
 
-			$samePayments = $this->conn->prepare($samePayments);
+			$sameOfficeCode = $this->conn->prepare($sameOfficeCode);
 
-			$samePayments->execute();
+			$sameOfficeCode->execute();
 
-			if($samePayments->rowCount()){
-				$this->errors[] = "Payment with same check number already exists. Please update check number.";
+			if($sameOfficeCode->rowCount()){
+				$this->errors[] = "Office with same office code already exists. Please update Office Code.";
 				$this->valid = false;
 			}
 		}
 
-		public function customerExists(){
-			$this->valid = false;
-
-			//New sales rep number is valid name exists
-			$customersDataset = "
+		public function countEmployees(){
+			$this->employees = "
 				SELECT
-					*
+					COUNT(employeeNumber) as value
 				FROM
-					customers
+					employees
 				WHERE
-					customerNumber='{$this->customerNumber}'
-				;
+					officeCode={$this->officeCode}
 			";
 
-			$customersDataset = $this->conn->prepare($customersDataset);
+			$this->employees = $this->conn->prepare($this->employees);
 
-			$customersDataset->execute();
+			$this->employees->execute();
 
-			if($customersDataset->rowCount()){
-				$this->valid = true;
-				return;
-			}	
+			$this->employees = $this->employees->fetch(PDO::FETCH_ASSOC);
 			
-			$this->errors[] = "Invalid sales representative.";
+			$this->employees = intval($this->employees['value']);
 		}
 
 		public function list(){
-			$paymentsDataset = "
+			$officesDataset = "
 				SELECT
-					p.customerNumber,
-					c.customerName,
-					p.checkNumber,
-					p.paymentDate,
-					p.amount
+					*
 				FROM
-					{$this->table} p
-					INNER JOIN
-					customers c
-					ON
-					c.customerNumber=p.customerNumber
+					{$this->table}
 				ORDER BY
-					paymentDate DESC
+					city
 				;
 			";
 
-			$paymentsDataset = $this->conn->prepare($paymentsDataset);
-			$paymentsDataset->execute();
+			$officesDataset = $this->conn->prepare($officesDataset);
+			$officesDataset->execute();
 
-			return $paymentsDataset;
+			return $officesDataset;
 		}
 
 		public function details(){
-			$paymentDetails = "
+			$officeDetails = "
 				SELECT
-					p.customerNumber,
-					c.customerName,
-					p.checkNumber,
-					p.paymentDate,
-					p.amount
+					*
 				FROM
-					{$this->table} p
-					INNER JOIN
-					customers c
-					ON
-					c.customerNumber=p.customerNumber
+					{$this->table}
 				WHERE
-					p.customerNumber=?
-					AND
-					p.checkNumber=?
+					officeCode=?
 				;
 			";
 
-			$paymentDetails = $this->conn->prepare($paymentDetails);
+			$officeDetails = $this->conn->prepare($officeDetails);
 
-			$paymentDetails->bindParam(1, $this->customerNumber);
-			$paymentDetails->bindParam(2, $this->checkNumber);
+			$officeDetails->bindParam(1, $this->officeCode);
 
-			$paymentDetails->execute();
+			$officeDetails->execute();
 
-			if($paymentDetails->rowCount()==0){
+			if($officeDetails->rowCount()==0){
 				return;
 			}
 			
 			$this->valid = true;
 
-			$paymentDetails = $paymentDetails->fetch(PDO::FETCH_ASSOC);
+			$officeDetails = $officeDetails->fetch(PDO::FETCH_ASSOC);
 
-			extract($paymentDetails);
+			extract($officeDetails);
 
-			$this->customerNumber	= intval($customerNumber);
-			$this->checkNumber		= $checkNumber;
-			$this->paymentDate		= $paymentDate;
-			$this->amount			= floatval($amount);
+			$this->officeCode	= $officeCode;
+			$this->city			= $city;
+			$this->phone		= $phone;
+			$this->addressLine1	= $addressLine1;
+			$this->addressLine2	= $addressLine2;
+			$this->state		= $state;
+			$this->country		= $country;
+			$this->postalCode	= $postalCode;
+			$this->territory	= $territory;
 		}
 		
 		public function create(){
@@ -194,23 +189,29 @@
 				INSERT INTO
 					{$this->table}
 				SET
-					customerNumber=:customerNumber,
-					checkNumber=:checkNumber,
-					paymentDate=:paymentDate,
-					amount=:amount
+					officeCode=:officeCode,
+					city=:city,
+					phone=:phone,
+					addressLine1=:addressLine1,
+					addressLine2=:addressLine2,
+					state=:state,
+					country=:country,
+					postalCode=:postalCode,
+					territory=:territory
 				;
 			";
 
 			$insertRes = $this->conn->prepare($insertRes);
 
-			$this->checkNumber 		= htmlspecialchars(strip_tags($this->checkNumber));
-			$this->paymentDate 		= htmlspecialchars(strip_tags($this->paymentDate));
-			$this->amount 			= htmlspecialchars(strip_tags($this->amount));
-
-			$insertRes->bindParam(":customerNumber",	$this->customerNumber);
-			$insertRes->bindParam(":checkNumber",		$this->checkNumber);
-			$insertRes->bindParam(":paymentDate",		$this->paymentDate);
-			$insertRes->bindParam(":amount",			$this->amount);
+			$insertRes->bindParam(":officeCode",	$this->officeCode);
+			$insertRes->bindParam(":city",			$this->city);
+			$insertRes->bindParam(":phone",			$this->phone);
+			$insertRes->bindParam(":addressLine1",	$this->addressLine1);
+			$insertRes->bindParam(":addressLine2",	$this->addressLine2);
+			$insertRes->bindParam(":state",			$this->state);
+			$insertRes->bindParam(":country",		$this->country);
+			$insertRes->bindParam(":postalCode",	$this->postalCode);
+			$insertRes->bindParam(":territory",		$this->territory);
 
 			if($insertRes->execute()){
 				$this->valid = true;
@@ -228,23 +229,30 @@
 				UPDATE
 					{$this->table}
 				SET
-					checkNumber=:newCheckNumber,
-					paymentDate=:paymentDate,
-					amount=:amount
+					city=:city,
+					phone=:phone,
+					addressLine1=:addressLine1,
+					addressLine2=:addressLine2,
+					state=:state,
+					country=:country,
+					postalCode=:postalCode,
+					territory=:territory
 				WHERE
-					customerNumber=:customerNumber
-					AND
-					checkNumber=:checkNumber
+					officeCode=:officeCode
 				;
 			";
 
 			$updateRes = $this->conn->prepare($updateRes);
 
-			$updateRes->bindParam(":customerNumber", 	$this->customerNumber);
-			$updateRes->bindParam(":checkNumber", 		$this->checkNumber);
-			$updateRes->bindParam(":newCheckNumber", 	$this->newCheckNumber);
-			$updateRes->bindParam(":paymentDate",		$this->paymentDate);
-			$updateRes->bindParam(":amount",			$this->amount);
+			$updateRes->bindParam(":officeCode",	$this->officeCode);
+			$updateRes->bindParam(":city",			$this->city);
+			$updateRes->bindParam(":phone",			$this->phone);
+			$updateRes->bindParam(":addressLine1",	$this->addressLine1);
+			$updateRes->bindParam(":addressLine2",	$this->addressLine2);
+			$updateRes->bindParam(":state",			$this->state);
+			$updateRes->bindParam(":country",		$this->country);
+			$updateRes->bindParam(":postalCode",	$this->postalCode);
+			$updateRes->bindParam(":territory",		$this->territory);
 
 			if($updateRes->execute()){
 				$this->valid = true;
@@ -261,16 +269,13 @@
 				DELETE FROM
 					{$this->table}
 				WHERE
-					customerNumber=?
-					AND
-					checkNumber=?
+					officeCode=?
 				;
 			";
 
 			$deleteResult = $this->conn->prepare($deleteResult);
 
-			$deleteResult->bindParam(1, $this->customerNumber);
-			$deleteResult->bindParam(2, $this->checkNumber);
+			$deleteResult->bindParam(1, $this->officeCode);
 
 			$deleteResult->execute();
 

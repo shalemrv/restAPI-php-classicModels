@@ -82,7 +82,7 @@
 			if( !$this->valid("min-char", $this->country, 4) ){
 				$this->errors[] = "Country has to be at least 4 characters long.";
 				$this->valid = false;
-			}		
+			}
 		}
 
 		public function isDuplicate(){
