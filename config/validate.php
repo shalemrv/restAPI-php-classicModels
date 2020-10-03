@@ -25,6 +25,9 @@
 				case 'alphaNumSpaceSpecial':
 					return preg_replace('/[^A-Za-z0-9\s\-\.]/', '', $input);
 					
+				case 'sentence':
+					return preg_replace('/[^A-Za-z0-9\s\-\.]/', '', $input);
+					
 				case 'num':
 					return preg_replace('/[^0-9]/', '', $input);
 					

@@ -23,8 +23,8 @@
 
 	$i = 0;
 
-	while($paymentDetails = $paymentsDataset->fetch(PDO::FETCH_ASSOC)){
-		extract($paymentDetails);
+	while($details = $paymentsDataset->fetch(PDO::FETCH_ASSOC)){
+		extract($details);
 		$i++;
 		array_push(
 			$paymentsList,
