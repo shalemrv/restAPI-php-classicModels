@@ -35,7 +35,7 @@
 		public function validate(){
 			$this->valid = true;
 
-			$this->customerName 			= $this->cleanse("alphaNumSpaceSpecial", $this->customerName));
+			$this->customerName 			= $this->cleanse("alphaNumSpaceSpecial", $this->customerName);
 			$this->contactFirstName 		= $this->cleanse("alphaSpace", $this->contactFirstName);
 			$this->contactLastName 			= $this->cleanse("alphaSpace", $this->contactLastName);
 			$this->phone 					= $this->cleanse("num", $this->phone);

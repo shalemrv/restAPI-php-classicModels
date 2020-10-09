@@ -20,6 +20,14 @@
 			$this->conn = null;
 
 			try{
+				//MySQL Workbench
+				// $this->password = "654321@admin";
+				// $this->conn = new PDO(
+				// 	"mysql:host={$this->host};port=3307;dbname={$this->dbName};charset=utf8",
+				// 	$this->username,
+				// 	$this->password
+				// );
+				//MySQL by XAMPP
 				$this->conn = new PDO(
 					"mysql:host={$this->host};dbname={$this->dbName};charset=utf8",
 					$this->username,
