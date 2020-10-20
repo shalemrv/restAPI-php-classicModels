@@ -31,6 +31,13 @@
 				case 'num':
 					return preg_replace('/[^0-9]/', '', $input);
 					
+				case 'ratio':
+					$parts	= explode(":", $input);
+					$p1		= preg_replace('/[^0-9]/', '', $parts[0]);
+					$p2		= ($parts[1])? preg_replace('/[^0-9]/', '', $parts[1]) : 1;
+
+					return "$p1:$p2";
+					
 				case 'removeSpaces':
 					return str_replace(" ", "", $input);					
 			}
