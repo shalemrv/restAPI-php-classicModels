@@ -33,11 +33,14 @@
 					
 				case 'ratio':
 					$parts	= explode(":", $input);
-					$p1		= preg_replace('/[^0-9]/', '', $parts[0]);
-					$p2		= ($parts[1])? preg_replace('/[^0-9]/', '', $parts[1]) : 1;
+					$p1		= intval($parts[0]);
+					$p2		= (isset($parts[1]))? intval($parts[1]) : 1;
+					
+					$p1		= ($p1)? $p1 : 1;
+					$p2		= ($p2)? $p2 : 1;
 
 					return "$p1:$p2";
-					
+
 				case 'removeSpaces':
 					return str_replace(" ", "", $input);					
 			}
@@ -53,48 +56,19 @@
 				
 				case 'email':
 					return filter_var($input, FILTER_VALIDATE_EMAIL);
+				
+				case 'date-format':
+					return preg_match("/\d{4}\-\d{2}-\d{2}/", $input);
+
+				case 'date':
+					$dateTime = DateTime::createFromFormat('Y-m-d', $input);
+					$errors = DateTime::getLastErrors();
+					if(!empty($errors['warning_count'])){
+						return false;
+					}
+					return $dateTime!==false;
 			}
 		}
-
-		// function removeHtmlTags($input){
-		// 	return htmlspecialchars(strip_tags($input));
-		// }
-
-		// function alpha($input){
-		// 	return preg_replace('/[^A-Za-z]/', '', $input);
-		// }
-
-		// function alphaSpace($input){
-		// 	return preg_replace('/[^A-Za-z\s]/', '', $input);
-		// }
-
-		// function alphaNum($input){
-		// 	return preg_replace('/[^A-Za-z0-9]/', '', $input);
-		// }
-
-		// function alphaNumSpace($input){
-		// 	return preg_replace('/[^A-Za-z0-9\s]/', '', $input);
-		// }
-
-		// function alphaNumSpaceSpecial($input){
-		// 	return preg_replace('/[^A-Za-z0-9\s\-\.]/', '', $input);
-		// }		
-
-		// function num($input){
-		// 	return preg_replace('/[^0-9]/', '', $input);
-		// }
-
-		// function validEmail($email){
-		// 	return filter_var($email, FILTER_VALIDATE_EMAIL);
-		// }
-
-		// function removeSpaces($input){
-		// 	return str_replace(" ", "", $input);
-		// }
-
-		// function validCharCount($input){
-		// 	return strlen(preg_replace('/[^A-Za-z0-9]/', '', $input));
-		// }
 	}
 
 ?>

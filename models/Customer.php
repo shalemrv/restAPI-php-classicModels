@@ -201,19 +201,7 @@
 		public function list(){
 			$customersDataset = "
 				SELECT
-					c.customerNumber,
-					c.customerName,
-					c.contactLastName,
-					c.contactFirstName,
-					c.phone,
-					c.addressLine1,
-					c.addressLine2,
-					c.city,
-					c.state,
-					c.postalCode,
-					c.country,
-					c.salesRepEmployeeNumber,
-					c.creditLimit,
+					c.*,
 
 					e.firstName,
 					e.lastName
@@ -237,19 +225,7 @@
 		public function details(){
 			$customerDetails = "
 				SELECT
-					c.customerNumber,
-					c.customerName,
-					c.contactLastName,
-					c.contactFirstName,
-					c.phone,
-					c.addressLine1,
-					c.addressLine2,
-					c.city,
-					c.state,
-					c.postalCode,
-					c.country,
-					c.salesRepEmployeeNumber,
-					c.creditLimit,
+					c.*,
 
 					e.firstName,
 					e.lastName
@@ -432,7 +408,7 @@
 				return;
 			}
 
-			$this->errors[] = $insertRes->error;
+			$this->errors[] = $deleteResult->error;
 		}
 	}
 ?>

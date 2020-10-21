@@ -271,7 +271,7 @@
 				return;
 			}
 
-			$this->errors[] = $insertRes->error;
+			$this->errors[] = $deleteResult->error;
 		}
 	}
 ?>
