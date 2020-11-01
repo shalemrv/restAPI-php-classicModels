@@ -1,5 +1,5 @@
 <?php
-	require("../../config/validate.php");
+	require_once("../../config/validate.php");
 
 	class Product{
 
@@ -30,7 +30,7 @@
 		public function validate(){
 			$this->valid = true;
 
-			$this->productCode 			= $this->cleanse("alphaNum", $this->productCode);
+			$this->productCode 			= $this->cleanse("alphaNumUnd", $this->productCode);
 			$this->productName 			= $this->cleanse("alphaNumSpace", $this->productName);
 			$this->productLine 			= $this->cleanse("alphaNumSpace", $this->productLine);
 			$this->productScale 		= $this->cleanse("ratio", $this->productScale);

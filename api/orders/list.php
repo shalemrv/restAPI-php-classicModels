@@ -1,6 +1,7 @@
 <?php
-	require("../../config/Database.php");
-	require("../../models/Order.php");
+	require_once("../../config/Database.php");
+	require_once("../../models/Order.php");
+	require_once("../../models/OrderDetails.php");
 
 	$finalResponse = array(
 		"complete"	=> false,
@@ -11,7 +12,8 @@
 
 	$db = $db->connect();
 
-	$order = new Order($db);
+	$order			= new Order($db);
+	$orderDetails	= new OrderDetails($db);
 
 	$ordersDataset =  $order->list();
 
@@ -26,17 +28,27 @@
 	while($details = $ordersDataset->fetch(PDO::FETCH_ASSOC)){
 		extract($details);
 		$i++;
+
+		$orderDetails->orderNumber = $orderNumber;
+
+		$orderDetailsList = $orderDetails->list();
+
+		if(sizeof($orderDetailsList)==0){
+			continue;
+		}
+
 		array_push(
 			$ordersList,
 			array(
-				"orderNumber"			=> intval($orderNumber),
-				"orderDate"				=> $orderDate,
-				"requiredDate"			=> $requiredDate,
-				"shippedDate"			=> $shippedDate,
-				"status"				=> $status,
-				"comments"				=> $comments,
-				"customerNumber"		=> intval($customerNumber),
-				"customerName"			=> $customerName
+				"orderNumber"		=> intval($orderNumber),
+				"orderDate"			=> $orderDate,
+				"requiredDate"		=> $requiredDate,
+				"shippedDate"		=> $shippedDate,
+				"status"			=> $status,
+				"comments"			=> $comments,
+				"customerNumber"	=> intval($customerNumber),
+				"customerName"		=> $customerName,
+				"orderDetails"		=> $orderDetailsList
 			)
 		);
 	}

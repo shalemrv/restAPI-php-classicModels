@@ -1,6 +1,6 @@
 <?php
-	require("../../config/Database.php");
-	require("../../models/Order.php");
+	require_once("../../config/Database.php");
+	require_once("../../models/Order.php");
 
 	$finalResponse = array(
 		"complete"	=> false,
@@ -22,7 +22,7 @@
 	$order->details();
 
 	if(!$order->valid){
-		$finalResponse['message'] = "Cannot retrieve details for the order number {$_GET['orderNumber']}";
+		$finalResponse['message'] = "Cannot retrieve details for the order number {$order->orderNumber}";
 		exit(json_encode($finalResponse));
 	}
 
@@ -39,7 +39,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully retrieved order details of {$_GET['orderNumber']}.",
+		"message"	=> "Successfully retrieved order details of {$order->orderNumber}.",
 		"result"	=> $orderDetails
 	);
 

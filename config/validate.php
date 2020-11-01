@@ -19,6 +19,9 @@
 				case 'alphaNum':
 					return preg_replace('/[^A-Za-z0-9]/', '', $input);
 					
+				case 'alphaNumUnd':
+					return preg_replace('/[^A-Za-z0-9_]/', '', $input);
+
 				case 'alphaNumSpace':
 					return preg_replace('/[^A-Za-z0-9\s]/', '', $input);
 					
@@ -27,7 +30,7 @@
 					
 				case 'sentence':
 					return preg_replace('/[^A-Za-z0-9\s\-\.]/', '', $input);
-					
+
 				case 'num':
 					return preg_replace('/[^0-9]/', '', $input);
 					

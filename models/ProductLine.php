@@ -1,5 +1,5 @@
 <?php
-	require("../../config/validate.php");
+	require_once("../../config/validate.php");
 
 	class ProductLine{
 

@@ -1,6 +1,6 @@
 <?php
-	require("../../config/Database.php");
-	require("../../models/Customer.php");
+	require_once("../../config/Database.php");
+	require_once("../../models/Customer.php");
 
 	$finalResponse = array(
 		"complete"	=> false,
