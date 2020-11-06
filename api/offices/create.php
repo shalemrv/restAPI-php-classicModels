@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -47,7 +47,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully created new office {$office->officeCode} @ {$office->city}."
+		"message"	=> array("Successfully created new office {$office->officeCode} @ {$office->city}.")
 	);
 
 	exit(json_encode($finalResponse));

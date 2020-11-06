@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['customerNumber'])) || (intval($_GET['customerNumber'])<=0) ){
@@ -24,7 +24,7 @@
 	$customer->details();
 
 	if(!$customer->valid){
-		$finalResponse['message'] = "Customer {$customer->customerNumber} does not exist";
+		$finalResponse['message'] = array("Customer {$customer->customerNumber} does not exist");
 		exit(json_encode($finalResponse));
 	}
 
@@ -43,7 +43,7 @@
 			$msg[] = "{$customer->payments} existing payment(s)";
 		}
 
-		$finalResponse['message'] = "Customer {$customer->customerNumber} has ".implode(" and ", $msg).". Please delete these records and try again.";
+		$finalResponse['message'] = array("Customer {$customer->customerNumber} has ".implode(" and ", $msg).". Please delete these records and try again.");
 
 		exit(json_encode($finalResponse));
 	}
@@ -51,13 +51,13 @@
 	// Run DELETE query and exit if it fails
 	$customer->delete();
 	if(!$customer->valid){
-		$finalResponse['message'] = "Failed to delete customer {$customerDetailsTxt}";
+		$finalResponse['message'] = array("Failed to delete customer {$customerDetailsTxt}");
 		exit(json_encode($finalResponse));
 	}
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully deleted customer {$customerDetailsTxt}"
+		"message"	=> array("Successfully deleted customer {$customerDetailsTxt}")
 	);
 
 	exit(json_encode($finalResponse));

@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['customerNumber'])) || (intval($_GET['customerNumber'])<=0) ){
@@ -22,7 +22,7 @@
 	$payment->details();
 
 	if(!$payment->valid){
-		$finalResponse['message'] = "Cannot retrieve details for the customer number {$_GET['customerNumber']}";
+		$finalResponse['message'] = array("Cannot retrieve details for the customer number {$_GET['customerNumber']}");
 		exit(json_encode($finalResponse));
 	}
 
@@ -44,7 +44,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully retrieved customer details of {$_GET['customerNumber']}.",
+		"message"	=> array("Successfully retrieved customer details of {$_GET['customerNumber']}."),
 		"result"	=> $customerDetails
 	);
 

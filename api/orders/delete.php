@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['orderNumber'])) || (intval($_GET['orderNumber'])<=0) ){
@@ -22,7 +22,7 @@
 	$order->details();
 
 	if(!$order->valid){
-		$finalResponse['message'] = "Order {$order->orderNumber} does not exist";
+		$finalResponse['message'] = array("Order {$order->orderNumber} does not exist");
 		exit(json_encode($finalResponse));
 	}
 
@@ -32,13 +32,13 @@
 	// Run DELETE query and exit if it fails
 	$order->delete();
 	if(!$order->valid){
-		$finalResponse['message'] = "Failed to delete order {$order->orderNumber}";
+		$finalResponse['message'] = array("Failed to delete order {$order->orderNumber}");
 		exit(json_encode($finalResponse));
 	}
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully deleted order {$order->orderNumber} and its {$order->orderChildren} child items."
+		"message"	=> array("Successfully deleted order {$order->orderNumber} and its {$order->orderChildren} child items.")
 	);
 
 	exit(json_encode($finalResponse));

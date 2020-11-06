@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['officeCode'])) || (intval($_GET['officeCode'])<=0) ){
@@ -22,7 +22,7 @@
 	$office->details();
 
 	if(!$office->valid){
-		$finalResponse['message'] = "Cannot retrieve details for the office code {$_GET['officeCode']}";
+		$finalResponse['message'] = array("Cannot retrieve details for the office code {$_GET['officeCode']}");
 		exit(json_encode($finalResponse));
 	}
 
@@ -40,7 +40,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully retrieved office details of {$_GET['officeCode']}.",
+		"message"	=> array("Successfully retrieved office details of {$_GET['officeCode']}."),
 		"result"	=> $officeDetails
 	);
 

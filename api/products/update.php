@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -18,7 +18,7 @@
 	// Check if Customer Exists and exit if not
 	$product->details();
 	if(!$product->valid){
-		$finalResponse['message'] = "Product {$product->productCode} does not exist";
+		$finalResponse['message'] = array("Product {$product->productCode} does not exist");
 		exit(json_encode($finalResponse));
 	}
 
@@ -49,7 +49,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully updated product - {$product->productCode}."
+		"message"	=> array("Successfully updated product - {$product->productCode}.")
 	);
 
 	exit(json_encode($finalResponse));

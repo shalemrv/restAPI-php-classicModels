@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Failed to retrieve list."
+		"message"	=> array("Failed to retrieve list.")
 	);
 	
 	$db = new Database();
@@ -38,7 +38,7 @@
 	
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Retrieved ".sizeof($productLinesList)." product lines.",
+		"message"	=> array("Retrieved ".sizeof($productLinesList)." product lines."),
 		"result"	=> $productLinesList
 	);
 

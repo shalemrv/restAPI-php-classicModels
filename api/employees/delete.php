@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['employeeNumber'])) || (intval($_GET['employeeNumber'])<=0) ){
@@ -22,7 +22,7 @@
 	$employee->details();
 
 	if(!$employee->valid){
-		$finalResponse['message'] = "Employee {$employee->employeeNumber} does not exist";
+		$finalResponse['message'] = array("Employee {$employee->employeeNumber} does not exist");
 		exit(json_encode($finalResponse));
 	}
 
@@ -32,20 +32,20 @@
 	$employee->countCustomers();
 
 	if($employee->customers){
-		$finalResponse['message'] = "Employee {$employee->employeeNumber} is linked to {$employee->customers} active customers. Please delete these customers and their orders/payments and try again.";
+		$finalResponse['message'] = array("Employee {$employee->employeeNumber} is linked to {$employee->customers} active customers. Please delete these customers and their orders/payments and try again.");
 		exit(json_encode($finalResponse));
 	}
 
 	// Run DELETE query and exit if it fails
 	$employee->delete();
 	if(!$employee->valid){
-		$finalResponse['message'] = "Failed to delete employee {$employeeDetailsTxt}";
+		$finalResponse['message'] = array("Failed to delete employee {$employeeDetailsTxt}");
 		exit(json_encode($finalResponse));
 	}
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully deleted employee {$employeeDetailsTxt}"
+		"message"	=> array("Successfully deleted employee {$employeeDetailsTxt}")
 	);
 
 	exit(json_encode($finalResponse));

@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -60,7 +60,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully created new employee.  {$employee->employeeNumber} - {$employee->firstName} {$employee->lastName}."
+		"message"	=> array("Successfully created new employee.  {$employee->employeeNumber} - {$employee->firstName} {$employee->lastName}.")
 	);
 
 	exit(json_encode($finalResponse));

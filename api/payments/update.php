@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -20,14 +20,14 @@
 	// Check if Customer Exists and exit if not
 	$payment->customerExists();
 	if(!$payment->valid){
-		$finalResponse['message'] = "Customer {$payment->customerNumber} does not exist";
+		$finalResponse['message'] = array("Customer {$payment->customerNumber} does not exist");
 		exit(json_encode($finalResponse));
 	}
 
 	// Check if payment exists and exit if not
 	$payment->details();
 	if(!$payment->valid){
-		$finalResponse['message'] = "Customer: {$payment->customerNumber} - CheckNo: {$payment->checkNumber}. Payment does not exist.";
+		$finalResponse['message'] = array("Customer: {$payment->customerNumber} - CheckNo: {$payment->checkNumber}. Payment does not exist.");
 		exit(json_encode($finalResponse));
 	}
 	
@@ -55,7 +55,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully updated Payment $paymentDetailsTxt."
+		"message"	=> array("Successfully updated Payment $paymentDetailsTxt.")
 	);
 
 	exit(json_encode($finalResponse));

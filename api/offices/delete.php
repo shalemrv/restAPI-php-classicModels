@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['officeCode'])) || (intval($_GET['officeCode'])<=0) ){
@@ -24,7 +24,7 @@
 	$office->details();
 
 	if(!$office->valid){
-		$finalResponse['message'] = "Office {$office->officeCode} does not exist";
+		$finalResponse['message'] = array("Office {$office->officeCode} does not exist");
 		exit(json_encode($finalResponse));
 	}
 
@@ -34,7 +34,7 @@
 	$office->countEmployees();
 
 	if($office->employees){
-		$finalResponse['message'] = "Office $officeDetailsTxt has {$office->employees} active employees. Please delete these employees and try again.";
+		$finalResponse['message'] = array("Office $officeDetailsTxt has {$office->employees} active employees. Please delete these employees and try again.");
 
 		exit(json_encode($finalResponse));
 	}
@@ -42,13 +42,13 @@
 	// Run DELETE query and exit if it fails
 	$office->delete();
 	if(!$office->valid){
-		$finalResponse['message'] = "Failed to delete customer {$officeDetailsTxt}";
+		$finalResponse['message'] = array("Failed to delete customer {$officeDetailsTxt}");
 		exit(json_encode($finalResponse));
 	}
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully deleted customer {$officeDetailsTxt}"
+		"message"	=> array("Successfully deleted customer {$officeDetailsTxt}")
 	);
 
 	exit(json_encode($finalResponse));

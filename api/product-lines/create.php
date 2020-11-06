@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -41,7 +41,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully created new Product Line {$productLine->productLine}."
+		"message"	=> array("Successfully created new Product Line {$productLine->productLine}.")
 	);
 
 	exit(json_encode($finalResponse));

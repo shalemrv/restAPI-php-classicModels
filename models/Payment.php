@@ -1,6 +1,5 @@
 <?php
-	require_once("../../config/validate.php");
-
+	
 	class Payment{
 
 		use Validate;

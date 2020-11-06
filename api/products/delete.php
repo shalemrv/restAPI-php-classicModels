@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['productCode'])) || (strlen($_GET['productCode'])==0) ){
@@ -21,7 +21,7 @@
 
 	$product->details();
 	if(!$product->valid){
-		$finalResponse['message'] = "Product {$product->productCode} does not exist";
+		$finalResponse['message'] = array("Product {$product->productCode} does not exist");
 		exit(json_encode($finalResponse));
 	}
 
@@ -29,20 +29,20 @@
 	$product->countOrders();
 
 	if($product->orders){
-		$finalResponse['message'] = "Product is present in {$product->orders} orders. Please delete these orders and try again.";
+		$finalResponse['message'] = array("Product is present in {$product->orders} orders. Please delete these orders and try again.");
 		exit(json_encode($finalResponse));
 	}
 
 	// Run DELETE query and exit if it fails
 	$product->delete();
 	if(!$product->valid){
-		$finalResponse['message'] = "Failed to delete product - {$product->productCode}";
+		$finalResponse['message'] = array("Failed to delete product - {$product->productCode}");
 		exit(json_encode($finalResponse));
 	}
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully deleted product - {$product->productCode}"
+		"message"	=> array("Successfully deleted product - {$product->productCode}")
 	);
 
 	exit(json_encode($finalResponse));

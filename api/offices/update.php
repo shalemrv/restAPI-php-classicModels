@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -18,7 +18,7 @@
 	// Check if Customer Exists and exit if not
 	$office->details();
 	if(!$office->valid){
-		$finalResponse['message'] = "Office {$office->officeCode} does not exist";
+		$finalResponse['message'] = array("Office {$office->officeCode} does not exist");
 		exit(json_encode($finalResponse));
 	}
 	
@@ -51,7 +51,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully updated customer $officeDetailsTxt."
+		"message"	=> array("Successfully updated customer $officeDetailsTxt.")
 	);
 
 	exit(json_encode($finalResponse));

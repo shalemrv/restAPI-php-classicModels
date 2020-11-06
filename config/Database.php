@@ -1,5 +1,6 @@
 <?php
-	include("headers.php");
+	require_once("headers.php");
+	require_once("validate.php");
 	/**
 	 * Database operations class
 	 */

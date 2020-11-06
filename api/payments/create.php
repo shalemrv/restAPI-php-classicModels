@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -49,7 +49,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully created new payment. Customer: {$payment->customerNumber} - CheckNo: {$payment->checkNumber}."
+		"message"	=> array("Successfully created new payment. Customer: {$payment->customerNumber} - CheckNo: {$payment->checkNumber}.")
 	);
 
 	exit(json_encode($finalResponse));

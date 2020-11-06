@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Failed to retrieve order details."
+		"message"	=> array("Failed to retrieve order details.")
 	);
 
 	if( (!isset($_GET['orderNumber'])) || (intval($_GET['orderNumber'])<=0) ){
@@ -24,7 +24,7 @@
 	if(sizeof($orderDetailsList)){
 		$finalResponse = array(
 			"complete"	=> true,
-			"message"	=> "Retrieved ".sizeof($orderDetailsList)." order details.",
+			"message"	=> array("Retrieved ".sizeof($orderDetailsList)." order details."),
 			"result"	=> $orderDetailsList
 		);
 	}

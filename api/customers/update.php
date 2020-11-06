@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -18,7 +18,7 @@
 	// Check if Customer Exists and exit if not
 	$customer->details();
 	if(!$customer->valid){
-		$finalResponse['message'] = "Customer {$customer->customerNumber} does not exist";
+		$finalResponse['message'] = array("Customer {$customer->customerNumber} does not exist");
 		exit(json_encode($finalResponse));
 	}
 	
@@ -55,7 +55,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully updated customer $customerDetailsTxt."
+		"message"	=> array("Successfully updated customer $customerDetailsTxt.")
 	);
 
 	exit(json_encode($finalResponse));

@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['employeeNumber'])) || (intval($_GET['employeeNumber'])<=0) ){
@@ -22,7 +22,7 @@
 	$employee->details();
 
 	if(!$employee->valid){
-		$finalResponse['message'] = "Cannot retrieve details for the employee number {$_GET['employeeNumber']}";
+		$finalResponse['message'] = array("Cannot retrieve details for the employee number {$_GET['employeeNumber']}");
 		exit(json_encode($finalResponse));
 	}
 
@@ -39,7 +39,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully retrieved employee details of {$_GET['employeeNumber']}.",
+		"message"	=> array("Successfully retrieved employee details of {$_GET['employeeNumber']}."),
 		"result"	=> $employeeDetails
 	);
 

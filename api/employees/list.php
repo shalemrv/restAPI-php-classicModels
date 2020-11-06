@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Failed to retrieve list."
+		"message"	=> array("Failed to retrieve list.")
 	);
 	
 	$db = new Database();
@@ -43,7 +43,7 @@
 	
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Retrieved ".sizeof($employeesList)." employees.",
+		"message"	=> array("Retrieved ".sizeof($employeesList)." employees."),
 		"result"	=> $employeesList
 	);
 

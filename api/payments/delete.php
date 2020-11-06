@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['customerNumber'])) || (intval($_GET['customerNumber'])<=0) ){
@@ -25,7 +25,7 @@
 	$payment->details();
 
 	if(!$payment->valid){
-		$finalResponse['message'] = "Customer: {$payment->customerNumber} - CheckNo: {$payment->checkNumber}. Payment does not exist.";
+		$finalResponse['message'] = array("Customer: {$payment->customerNumber} - CheckNo: {$payment->checkNumber}. Payment does not exist.");
 		exit(json_encode($finalResponse));
 	}
 
@@ -34,13 +34,13 @@
 	// Run DELETE query and exit if it fails
 	$payment->delete();
 	if(!$payment->valid){
-		$finalResponse['message'] = "Failed to delete payment of Amount {$payment->amount} {$paymentDetailsTxt}";
+		$finalResponse['message'] = array("Failed to delete payment of Amount {$payment->amount} {$paymentDetailsTxt}");
 		exit(json_encode($finalResponse));
 	}
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully deleted payment of Amount {$payment->amount} {$paymentDetailsTxt}"
+		"message"	=> array("Successfully deleted payment of Amount {$payment->amount} {$paymentDetailsTxt}")
 	);
 
 	exit(json_encode($finalResponse));

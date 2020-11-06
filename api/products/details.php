@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['productCode'])) || (strlen($_GET['productCode'])==0) ){
@@ -22,7 +22,7 @@
 	$product->details();
 
 	if(!$product->valid){
-		$finalResponse['message'] = "Cannot retrieve details for the product code {$_GET['productCode']}";
+		$finalResponse['message'] = array("Cannot retrieve details for the product code {$_GET['productCode']}");
 		exit(json_encode($finalResponse));
 	}
 
@@ -40,7 +40,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully retrieved product details of {$_GET['productCode']}.",
+		"message"	=> array("Successfully retrieved product details of {$_GET['productCode']}."),
 		"result"	=> $productDetails
 	);
 

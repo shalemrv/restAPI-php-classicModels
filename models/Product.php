@@ -1,6 +1,5 @@
 <?php
-	require_once("../../config/validate.php");
-
+	
 	class Product{
 
 		use Validate;

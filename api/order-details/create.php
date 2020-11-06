@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$db = new Database();
@@ -56,7 +56,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully added order details to {$orderDetails->orderNumber}."
+		"message"	=> array("Successfully added order details to {$orderDetails->orderNumber}.")
 	);
 
 	exit(json_encode($finalResponse));

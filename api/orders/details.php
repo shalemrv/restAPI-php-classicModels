@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	if( (!isset($_GET['orderNumber'])) || (intval($_GET['orderNumber'])<=0) ){
@@ -22,7 +22,7 @@
 	$order->details();
 
 	if(!$order->valid){
-		$finalResponse['message'] = "Cannot retrieve details for the order number {$order->orderNumber}";
+		$finalResponse['message'] = array("Cannot retrieve details for the order number {$order->orderNumber}");
 		exit(json_encode($finalResponse));
 	}
 
@@ -39,7 +39,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully retrieved order details of {$order->orderNumber}.",
+		"message"	=> array("Successfully retrieved order details of {$order->orderNumber}."),
 		"result"	=> $orderDetails
 	);
 

@@ -4,7 +4,7 @@
 
 	$finalResponse = array(
 		"complete"	=> false,
-		"message"	=> "Invalid Request."
+		"message"	=> array("Invalid Request.")
 	);
 
 	$params = json_decode(file_get_contents("php://input"), true);
@@ -41,7 +41,7 @@
 
 	$finalResponse = array(
 		"complete"	=> true,
-		"message"	=> "Successfully deleted order details {$orderDetails->productName} - {$orderDetails->orderNumber}"
+		"message"	=> array("Successfully deleted order details {$orderDetails->productName} - {$orderDetails->orderNumber}")
 	);
 
 	exit(json_encode($finalResponse));
