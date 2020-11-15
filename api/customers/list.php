@@ -53,6 +53,5 @@
 		"result"	=> $customersList
 	);
 
-	echo(json_encode($finalResponse));
-	echo json_last_error_msg(); 
+	exit(json_encode($finalResponse));
 ?>

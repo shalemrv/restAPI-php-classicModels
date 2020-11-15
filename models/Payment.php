@@ -38,13 +38,13 @@
 			}
 
 			// CHECK NUMBER VALID
-			if(!$this->valid("min-char", $this->checkNumber, 4){
+			if(!$this->valid("min-char", $this->checkNumber, 4)){
 				$this->errors[] = "Check number to be at least 4 characters long.";
-				$this->valid = false;	
+				$this->valid = false;
 			}
 
 			// PAYMENT DATE VALID
-			if(!$this->valid("eq-char", $this->paymentDate, 10){
+			if(!$this->valid("eq-char", $this->paymentDate, 10)){
 				$this->errors[] = "Payment date has to be exactly 10 characters long. YYYY-mm-dd E.g.2020-12-31";
 				$this->valid = false;
 			}
@@ -106,6 +106,26 @@
 			}	
 			
 			$this->errors[] = "Invalid sales representative.";
+		}
+
+		public function countRecords(){
+			$recordsCount = "
+				SELECT
+					COUNT(*) as value
+				FROM
+					{$this->table}
+				;
+			";
+
+			$recordsCount = $this->conn->prepare($recordsCount);
+
+			$recordsCount->execute();
+
+			$recordsCount = $recordsCount->fetch(PDO::FETCH_ASSOC);
+			
+			$recordsCount = intval($recordsCount['value']);
+
+			return $recordsCount;
 		}
 
 		public function list(){

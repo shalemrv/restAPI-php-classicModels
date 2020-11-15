@@ -157,6 +157,26 @@
 			$this->orders = intval($this->orders['value']);
 		}
 
+		public function countRecords(){
+			$recordsCount = "
+				SELECT
+					COUNT(*) as value
+				FROM
+					{$this->table}
+				;
+			";
+
+			$recordsCount = $this->conn->prepare($recordsCount);
+
+			$recordsCount->execute();
+
+			$recordsCount = $recordsCount->fetch(PDO::FETCH_ASSOC);
+			
+			$recordsCount = intval($recordsCount['value']);
+
+			return $recordsCount;
+		}
+
 		public function list(){
 			$productsDataset = "SELECT * FROM {$this->table};";
 

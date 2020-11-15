@@ -20,6 +20,10 @@
 	$order->status 				= $params['status'];
 	$order->comments 			= (isset($params['comments']))? $params['comments'] : "";
 	$order->customerNumber 		= $params['customerNumber'];
+	$order->orderDetailsParams	= $params['orderDetails'];
+
+	//Get new order number
+	$order->getNewOrderNumber();
 
 	// Check if data is valid and exit if not
 	$order->validate();
@@ -32,6 +36,12 @@
 	$order->customerExists();
 	if(!$order->valid){
 		$finalResponse['message'] = $order->errors;
+		exit(json_encode($finalResponse));
+	}
+
+	// Check if order details is empty and exit if true
+	if(!sizeof($order->orderDetailsList)){
+		$finalResponse['message'] = "Order details cannot be empty.";
 		exit(json_encode($finalResponse));
 	}
 

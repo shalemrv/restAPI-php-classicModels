@@ -160,6 +160,26 @@
 			$this->customers = intval($this->customers['value']);
 		}
 
+		public function countRecords(){
+			$recordsCount = "
+				SELECT
+					COUNT(*) as value
+				FROM
+					{$this->table}
+				;
+			";
+
+			$recordsCount = $this->conn->prepare($recordsCount);
+
+			$recordsCount->execute();
+
+			$recordsCount = $recordsCount->fetch(PDO::FETCH_ASSOC);
+			
+			$recordsCount = intval($recordsCount['value']);
+
+			return $recordsCount;
+		}
+
 		public function list(){
 			$employeesDataset = "
 				SELECT

@@ -156,6 +156,26 @@
 			$this->errors[] = "Invalid sales representative.";
 		}
 
+		public function countRecords(){
+			$recordsCount = "
+				SELECT
+					COUNT(*) as value
+				FROM
+					{$this->table}
+				;
+			";
+
+			$recordsCount = $this->conn->prepare($recordsCount);
+
+			$recordsCount->execute();
+
+			$recordsCount = $recordsCount->fetch(PDO::FETCH_ASSOC);
+			
+			$recordsCount = intval($recordsCount['value']);
+
+			return $recordsCount;
+		}
+
 		public function countOrders(){
 			$this->orders = "
 				SELECT

@@ -1,5 +1,6 @@
 <?php
-	
+	require_once("OrderDetails.php");
+
 	class Order{
 
 		use Validate;
@@ -20,6 +21,8 @@
 		public $comments;
 		public $customerNumber;
 		public $customerName;
+		public $orderDetailsParams;
+		public $orderDetailsList = array();
 		
 		function __construct($db){
 			$this->conn = $db;
@@ -39,17 +42,17 @@
 			// ORDER DATE FORMAT VALID
 			if( !$this->valid("date-format", $this->orderDate) ){
 				$this->errors[] = "Invalid Order Date. Date format YYYY-MM-DD.";
-				$this->valid = false;	
+				$this->valid = false;
 			}
 			// ORDER DATE VALID
 			if( !$this->valid("date", $this->orderDate) ){
 				$this->errors[] = "Invalid Order Date. Date format YYYY-MM-DD.";
-				$this->valid = false;	
+				$this->valid = false;
 			}
 			// REQUIRED DATE VALID
 			if( !$this->valid("date", $this->requiredDate) ){
 				$this->errors[] = "Invalid Required Date. Date format YYYY-MM-DD.";
-				$this->valid = false;	
+				$this->valid = false;
 			}
 
 			// SHIPPED DATE VALID
@@ -65,7 +68,46 @@
 			// STATUS VALID
 			if( !$this->valid("min-char", $this->status, 5) ){
 				$this->errors[] = "Status has to be at least 5 characters long.";
-				$this->valid = false;	
+				$this->valid = false;
+			}
+
+			$i = 0;
+
+			foreach($this->orderDetailsParams as $index => $od){
+				$this->orderDetailsList[$i] = new OrderDetails($this->conn);
+				$this->orderDetailsList[$i]->orderNumber 		= $this->orderNumber;
+				$this->orderDetailsList[$i]->productCode 		= $od['productCode'];
+				$this->orderDetailsList[$i]->quantityOrdered 	= $od['quantityOrdered'];
+				$this->orderDetailsList[$i]->priceEach 			= $od['priceEach'];
+				$this->orderDetailsList[$i]->orderLineNumber 	= $i;
+
+				// Check if data is valid and exit if not
+				$this->orderDetailsList[$i]->validate();
+				if(!$this->orderDetailsList[$i]->valid){
+					$temp = array_pop($this->orderDetailsList);
+					continue;
+				}
+
+				// Check if same duplicate exist and exit if duplicate
+				$this->orderDetailsList[$i]->isDuplicate();
+				if(!$this->orderDetailsList[$i]->valid){
+					$temp = array_pop($this->orderDetailsList);
+					continue;
+				}
+
+				// Check if selected Product exists and exit if not
+				$this->orderDetailsList[$i]->productExists();
+				if(!$this->orderDetailsList[$i]->valid){
+					$temp = array_pop($this->orderDetailsList);
+					continue;
+				}
+
+				$i++;
+			}
+
+			if(!sizeof($this->orderDetailsList)){
+				$this->errors[] = "None of the order details are valid.";
+				$this->valid = false;
 			}
 		}
 
@@ -112,6 +154,44 @@
 			$this->orderChildren = $this->orderChildren->fetch(PDO::FETCH_ASSOC);
 			
 			$this->orderChildren = intval($this->orderChildren['value']);
+		}
+
+		public function getNewOrderNumber(){
+			$this->orderNumber = "
+				SELECT
+					MAX(orderNumber) as value
+				FROM
+					orders
+				;
+			";
+
+			$this->orderNumber = $this->conn->prepare($this->orderNumber);
+
+			$this->orderNumber->execute();
+
+			$this->orderNumber = $this->orderNumber->fetch(PDO::FETCH_ASSOC);
+			
+			$this->orderNumber = intval($this->orderNumber['value']) + 1;
+		}
+
+		public function countRecords(){
+			$recordsCount = "
+				SELECT
+					COUNT(*) as value
+				FROM
+					{$this->table}
+				;
+			";
+
+			$recordsCount = $this->conn->prepare($recordsCount);
+
+			$recordsCount->execute();
+
+			$recordsCount = $recordsCount->fetch(PDO::FETCH_ASSOC);
+			
+			$recordsCount = intval($recordsCount['value']);
+
+			return $recordsCount;
 		}
 
 		public function list(){
@@ -184,23 +264,6 @@
 		
 		public function create(){
 
-			//Get Latest Order number
-			$maxNumber = "
-				SELECT
-					MAX(orderNumber) AS value
-				FROM
-					{$this->table}
-				;
-			";
-
-			$maxNumber = $this->conn->prepare($maxNumber);
-
-			$maxNumber->execute();
-
-			$maxNumber = $maxNumber->fetch(PDO::FETCH_ASSOC);
-
-			$this->orderNumber = intval($maxNumber['value']) + 1;
-
 			$this->valid = false;
 
 			$insertRes = "
@@ -227,12 +290,22 @@
 			$insertRes->bindParam(":comments",			$this->comments);
 			$insertRes->bindParam(":customerNumber",	$this->customerNumber);
 
-			if($insertRes->execute()){
-				$this->valid = true;
+			if(!$insertRes->execute()){
+				$this->errors[] = $insertRes->error;
 				return;
 			}
 
-			$this->errors[] = $insertRes->error;
+			//Create Order Details
+			foreach($this->orderDetailsList as $od){
+				$od->create();
+				if(!$od->valid){
+					$finalResponse['message'] = $orderDetails->errors;
+					exit(json_encode($finalResponse));
+				}
+			}
+			
+			$this->valid = true;
+
 		}
 
 		public function update(){
