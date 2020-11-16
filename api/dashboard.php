@@ -26,53 +26,18 @@
 	$payment	= new Payment($db);
 	$product	= new Product($db);
 
-	array_push(
-		$dashboardDetails,
-		array(
-			"label"	=> "Customers",
-			"value"	=> $customer->countRecords()
-		)
-	);
+	
+	$dashboardDetails["customers"] = $customer->countRecords();
 
-	array_push(
-		$dashboardDetails,
-		array(
-			"label"	=> "Employees",
-			"value"	=> $employee->countRecords()
-		)
-	);
+	$dashboardDetails["employees"] = $employee->countRecords();
 
-	array_push(
-		$dashboardDetails,
-		array(
-			"label"	=> "Offices",
-			"value"	=> $office->countRecords()
-		)
-	);
+	$dashboardDetails["offices"] = $office->countRecords();
 
-	array_push(
-		$dashboardDetails,
-		array(
-			"label"	=> "Products",
-			"value"	=> $product->countRecords()
-		)
-	);
+	$dashboardDetails["products"] = $product->countRecords();
 
-	array_push(
-		$dashboardDetails,
-		array(
-			"label"	=> "Orders",
-			"value"	=> $order->countRecords()
-		)
-	);
+	$dashboardDetails["orders"] = $order->countRecords();
 
-	array_push(
-		$dashboardDetails,
-		array(
-			"label"	=> "Payments",
-			"value"	=> $payment->countRecords()
-		)
-	);
+	$dashboardDetails["payments"] = $payment->countRecords();
 
 	$finalResponse = array(
 		"complete"	=> true,
