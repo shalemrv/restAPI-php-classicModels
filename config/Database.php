@@ -6,16 +6,41 @@
 	 */
 	class Database{
 
-		private $host		= "localhost";
-		private $username	= "root";
-		private $password	= "";
-		private $dbName		= "classic_models";
+		private $host;
+		private $username;
+		private $password;
+		private $dbName;
 
 		public $conn;
 		
-		// function __construct(argument){
-		// 	# code...
-		// }
+		function __construct(){
+
+			$apiReqBy = $_SERVER['REMOTE_ADDR'];
+
+			$apiReqByParts = explode(".", $apiReqBy);
+
+			// if($apiReqBy=="127.0.0.1" || $apiReqBy=="::1"){
+			// 	exit(json_encode(array(
+			// 		"complete"	=> false,
+			// 		"message"	=> "This API is only for Demo"
+			// 	)));
+			// }
+
+			$domain			= $_SERVER['HTTP_HOST'];
+			$devServer1		= (strpos($domain, "127.0.0.1")!== false)? true : false;
+			$devServer2		= (strpos($domain, "localhost")!== false)? true : false;
+			$isDevServer	= ($devServer1 || $devServer2)? true : false;
+
+			if($isDevServer){
+				$this->host		= "localhost";
+				$this->username	= "root";
+				$this->password	= "";
+				$this->dbName	= "classic_models";
+			}
+			else{
+				require("server-credentials.php");
+			}
+		}
 
 		public function connect(){
 			$this->conn = null;
