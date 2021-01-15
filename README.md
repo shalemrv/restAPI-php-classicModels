@@ -10,7 +10,7 @@ All responses will be in the below format
 		"result"	: requestedData
 	}
 
-CUSTOMERS API
+## CUSTOMERS API
 
 	1. List of all Customers
 
