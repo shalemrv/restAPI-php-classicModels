@@ -1,14 +1,14 @@
-# restAPI-php-sample-db
+# Rest API for Classic Modals DB `PHP`
 
-PHP REST API performing CRUD operations on a relational MySQL database
+PHP REST API performing CRUD operations on a relational MySQL sample database available on the internet. 
 
 All responses will be in the below format
 
-{
-	"complete"	: true,
-	"message"	: "API Execution Message",
-	"result"	: requestedData
-}
+	{
+		"complete"	: true,
+		"message"	: "API Execution Message",
+		"result"	: requestedData
+	}
 
 CUSTOMERS API
 
